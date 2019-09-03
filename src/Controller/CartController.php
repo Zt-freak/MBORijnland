@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -37,8 +38,10 @@ class CartController extends AbstractController
     /**
      * @Route("/{id}/{value}/cart", name="cart_set")
      */
-    public function setCart ()
+    public function setCart (Request $request, ProductRepository $productRepository)
     {
-        return "Test";
+        $id = $request->getParameter('id');
+        $value = $request->getParameter('value');
+        return $this->redirectToRoute('cart');
     }
 }

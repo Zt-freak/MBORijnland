@@ -98,6 +98,7 @@
         const subPrices = document.getElementsByClassName("subPrice")
         const Totals = document.getElementsByClassName("total")
         const Ids = document.getElementsByClassName("hidden")
+        const links = document.getElementsByClassName("link")
 
         const updatePrices = () => {
             let total = 0
@@ -125,8 +126,7 @@
                 url = url.replace('test1', Ids[x].value)
                 url = url.replace('test2', value)
 
-
-
+                links[x].href = url
                 updatePrices()
             })
         }

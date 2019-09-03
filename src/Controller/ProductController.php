@@ -103,7 +103,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/{id}/add", name="product_add", methods={"GET", "POST"})
      */
-    public function addToCart(Request $request, Product $product, ProductRepository $productRepository)
+    public function addToCart(Product $product, ProductRepository $productRepository)
     {
         if (isset($product)){
             $cart = $this->session->get("Cart", []);
