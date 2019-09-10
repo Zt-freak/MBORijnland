@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
+use App\Form\CheckoutFormType;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -22,7 +23,7 @@ class CartController extends AbstractController
      */
     public function index(ProductRepository $productRepository)
     {
-        $cart = $this->session->get("Cart");
+        $cart = $this->session->get("Cart", array());
         $Products = array();
 
         foreach($cart as $id => $product){
@@ -43,5 +44,50 @@ class CartController extends AbstractController
         $id = $request->getParameter('id');
         $value = $request->getParameter('value');
         return $this->redirectToRoute('cart');
+    }
+
+    /**
+     * @Route("/checkout", name="checkout")
+     */
+    public function checkout (Request $request, ProductRepository $productRepository, \Swift_Mailer $mailer)
+    {
+        $form = $this->createForm(CheckoutFormType::class);
+
+        $form->handleRequest($request);
+
+        $cart = $this->session->get("Cart", array());
+        $Products = array();
+
+        foreach($cart as $id => $product){
+            array_push($Products, ["Amount" => $product["Amount"], "Product" => $productRepository->find($id)]);
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+
+            $message = (new \Swift_Message('Bevestegings Email!'))
+                ->setFrom('info@webshop.com')
+                ->setReplyTo('1031858@mborijnland.nl')
+                ->setTo($formData['Email'])
+                ->setBody(
+                    $this->renderView(
+                        'emails/checkout.html.twig',
+                        ["Naam" => $formData["Naam"], "Products" => $Products]
+                    ),
+                    'text/html'
+                )
+            ;
+
+            $mailer->send($message);
+
+            $this->session->set("Cart", array());
+
+            return $this->redirectToRoute('product_index');
+        }
+
+        return $this->render('cart/checkout.html.twig', [
+            "submitForm" => $form->createView(),
+            "Products" => $Products,
+        ]);
     }
 }
