@@ -15,7 +15,7 @@ class CheckoutFormType extends AbstractType
         $builder
             ->add('Naam', TextType::class)
             ->add('Email', EmailType::class, array(
-                'label' => 'E-mail'
+                'label' => 'E-maile'
             ))
         ;
     }
