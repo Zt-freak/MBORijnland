@@ -9,9 +9,9 @@
         <thead>
         <tr>
             <th>Id</th>
-            <th>Geplaatst door</th>
-            <th>Betaald</th>
-            <th>Betaald op</th>
+            <th>Product</th>
+            <th>Prijs</th>
+            <th>Aantal</th>
             <th></th>
         </tr>
         </thead>
@@ -19,17 +19,18 @@
         {% for order in Orders %}
             <tr>
                 <td>{{ order.id }}</td>
-                <td>{{ order.user }}</td>
-                <td>{{ order.payed ? 'Ja' : 'nee' }}</td>
-                <td>{{ order.payedAt|date("m/d/Y H:m:s") }}</td>
-                <td><a href="{{ path('bestelling_producten', {'id': order.id }) }}">Bekijke producten</a></td>
+                <td>{{ order.product.name }}</td>
+                <td>€{{ order.product.price }}</td>
+                <td>{{ order.amount }}</td>
+                <td><a href="{{ path('product_show', {'id': order.product.id}) }}">Bekijk product</a></td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">U heeft geen bestellingen</td>
+                <td colspan="4">no records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
+    <a href="{{ path('vat_new') }}">Create new</a>
 {% endblock %}

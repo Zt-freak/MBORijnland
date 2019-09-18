@@ -2,18 +2,48 @@
 
 namespace App\Controller;
 
+use App\Entity\Orders;
+use App\Repository\OrdersListRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\OrdersRepository;
+use Symfony\Component\Security\Core\Security;
 
 class BestellingController extends AbstractController
 {
+
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
     /**
      * @Route("/bestelling", name="bestelling")
      */
-    public function index()
+    public function index(OrdersRepository $ordersRepository)
     {
-        return $this->render('bestelling/index.html.twig', [
-            'controller_name' => 'BestellingController',
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return $this->render('bestelling/index.html.twig', [
+                'Orders' => $ordersRepository->findAll(),
+            ]);
+        } else {
+            return $this->render('bestelling/index.html.twig', [
+                'Orders' => $ordersRepository->findBy(['user' => $this->getUser()]),
+            ]);
+        }
+    }
+
+    /**
+     * @Route("/bestelling/{id}", name="bestelling_producten")
+     */
+    public function showProducten(OrdersListRepository $ordersListRepository, Orders $orders)
+    {
+        $bestelling = array();
+        $Orders = $ordersListRepository->findBy(['orders' => $orders->getId()]);
+
+        return $this->render('bestelling/products.html.twig', [
+            'Orders' => $Orders
         ]);
     }
 }

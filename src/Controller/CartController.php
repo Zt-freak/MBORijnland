@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
 use App\Form\CheckoutFormType;
 use App\Repository\ProductRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -9,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Entity\Orders;
+use App\Entity\OrdersList;
 
 class CartController extends AbstractController
 {
@@ -56,6 +59,32 @@ class CartController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $Orders = new Orders();
+            $Orders->setUser($this->getUser());
+            $Orders->setPayed(true);
+            $Orders->setPayedAt(new \DateTime('now'));
+
+            $entityManager->persist($Orders);
+
+            $entityManager->flush();
+
+            $cart = $this->session->get('Cart', array());
+
+            foreach ($cart as $id => $amount) {
+                $product = $productRepository->find($id);
+
+                $OrderList = new OrdersList();
+                $OrderList->setProduct($product);
+                $OrderList->setOrders($Orders);
+                $OrderList->setAmount($amount["Amount"]);
+
+                $entityManager->persist($OrderList);
+
+                $entityManager->flush();
+            }
+
             $formData = $form->getData();
 
             $message = (new \Swift_Message('Bevestegings Email!'))
