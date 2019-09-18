@@ -19,32 +19,15 @@ class OrdersListRepository extends ServiceEntityRepository
         parent::__construct($registry, OrdersList::class);
     }
 
-    // /**
-    //  * @return OrdersList[] Returns an array of OrdersList objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function mostBought()
     {
         return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('o.id', 'ASC')
-            ->setMaxResults(10)
+            ->select('COUNT(o.product) as amount, IDENTITY(o.product) as product')
+            ->groupBy('o.product')
+            ->orderBy('amount', 'DESC')
+            ->setMaxResults(2)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?OrdersList
-    {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

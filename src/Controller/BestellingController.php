@@ -7,6 +7,7 @@ use App\Repository\OrdersListRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\OrdersRepository;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
 
 class BestellingController extends AbstractController
@@ -39,9 +40,15 @@ class BestellingController extends AbstractController
      */
     public function showProducten(OrdersListRepository $ordersListRepository, Orders $orders)
     {
-        $bestelling = array();
-        $Orders = $ordersListRepository->findBy(['orders' => $orders->getId()]);
-
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            $Orders = $ordersListRepository->findBy(['orders' => $orders->getId()]);
+        } else {
+            if ($orders->getUser() === $this->getUser()) {
+                $Orders = $ordersListRepository->findBy(['orders' => $orders->getId()]);
+            } else {
+                throw new AccessDeniedException('U heeft geen toegang tot deze bestelling!');
+            }
+        }
         return $this->render('bestelling/products.html.twig', [
             'Orders' => $Orders
         ]);
