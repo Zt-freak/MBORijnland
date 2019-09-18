@@ -72,8 +72,12 @@
                 </td>
                 <td data-th="Subtotal" class="text-center subPrice">1.99</td>
                 <td class="actions" data-th="">
-                    <a class="btn btn-info btn-sm link"><i class="fa fa-refresh"></i></a>
-                    <a class="btn btn-danger btn-sm link"><i class="fa fa-trash-o"></i></a>
+                    <a href="{{ path('product_add', {'id': product.Product.id}) }}" class="btn btn-info btn-sm link"><i class="fa fa-plus"></i></a>
+                    {% if product.Amount > 1 %}
+                        <a href="{{ path('product_minus', {'id': product.Product.id}) }}" class="btn btn-danger btn-sm link"><i class="fa fa-minus"></i></a>
+                    {% else %}
+                        <a href="{{ path('product_minus', {'id': product.Product.id}) }}" class="btn btn-danger btn-sm link"><i class="fa fa-trash-o"></i></a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
@@ -119,19 +123,5 @@
         }
 
         updatePrices()
-
-        for (let x = 0; x < Totals.length; x++) {
-            amounts[x].addEventListener("change", e => {
-                const value = e.target.value
-                let url = "{{ path('cart_set', {'id': 'test1', 'value': 'test2'}) }}"
-
-                url = url.replace('test1', Ids[x].value)
-                url = url.replace('test2', value)
-
-                links[x].href = url
-                updatePrices()
-            })
-        }
-
     </script>
 {% endblock %}

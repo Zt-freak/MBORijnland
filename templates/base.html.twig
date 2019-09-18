@@ -26,10 +26,29 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ path('product_index') }}">Product</a></li>
+                    {% if is_granted('ROLE_ADMIN') %}
                     <li><a href="{{ path('category_index') }}">Category</a></li>
+                    <li><a href="{{ path('user_index') }}">Klanten</a></li>
+                    <li><a href="{{ path('vat_index') }}">BTW schalen</a></li>
+                    {% endif %}
+                    {% if app.user %}
+                        <li><a href="{{ path('fos_user_profile_show') }}">Profiel</a></li>
+                        {% else %}
+
+                    {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <a href="{{ path('cart') }}" class="btn btn-success btn-block navbar-btn navbar-right">Cart</a>
+                    <a href="{{ path('cart') }}" class="btn btn-success navbar-btn navbar-right cart">Cart</a>
+                    {% for item in app.session.get("Cart") %}
+                        {% if item["Amount"] is defined %}
+                            <span class="amount" style="display: none;">{{ item["Amount"] }}</span>
+                        {% endif %}
+                    {% endfor %}
+                    {% if app.user %}
+                        <a href="{{ path('fos_user_security_logout') }}" class="btn btn-danger navbar-btn navbar-right" style="margin-right: 15px;">Logout</a>
+                     {% else %}
+                         <a href="{{ path('fos_user_security_login') }}" class="btn btn-success navbar-btn navbar-right" style="margin-right: 15px;">Login</a>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -37,6 +56,18 @@
     <div class="container">
         {% block body %}{% endblock %}
     </div>
+    <script>
+        const amounts = document.getElementsByClassName('amount')
+        let total = 0
+
+        for (let x = 0; x < amounts.length; x++) {
+            const amount = parseInt(amounts[x].innerText)
+
+            total += amount
+        }
+
+        document.getElementsByClassName('cart')[0].innerHTML = "Cart " + total
+    </script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

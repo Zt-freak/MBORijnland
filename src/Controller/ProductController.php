@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,6 +36,8 @@ class ProductController extends AbstractController
 
     /**
      * @Route("/new", name="product_new", methods={"GET","POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function new(Request $request): Response
     {
@@ -68,6 +71,8 @@ class ProductController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="product_edit", methods={"GET","POST"})
+     *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function edit(Request $request, Product $product): Response
     {
@@ -88,6 +93,8 @@ class ProductController extends AbstractController
 
     /**
      * @Route("/{id}", name="product_delete", methods={"DELETE"})
+     *
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function delete(Request $request, Product $product): Response
     {
@@ -103,7 +110,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/{id}/add", name="product_add", methods={"GET", "POST"})
      */
-    public function addToCart(Product $product, ProductRepository $productRepository)
+    public function addToCart(Product $product)
     {
         if (isset($product)){
             $cart = $this->session->get("Cart", []);
@@ -120,9 +127,30 @@ class ProductController extends AbstractController
             return $this->redirectToRoute("cart");
 
         } else {
-            return $this->render('product/index.html.twig', [
-                'products' => $productRepository->findAll(),
-            ]);
+            return $this->redirectToRoute('product_index');
+        }
+    }
+
+    /**
+     * @Route("/{id}/minus", name="product_minus")
+     */
+    public function minusCart (Product $product)
+    {
+        $id = $product->getId();
+        $cart = $this->session->get('Cart', array());
+
+        if (isset($cart)) {
+            if ($cart[$id]["Amount"] < 2) {
+                unset($cart[$id]);
+            } else {
+                $cart[$id]["Amount"]--;
+            }
+
+            $this->session->set('Cart', $cart);
+
+            return $this->redirectToRoute('cart');
+        } else {
+            return $this->redirectToRoute('product_index');
         }
     }
 }

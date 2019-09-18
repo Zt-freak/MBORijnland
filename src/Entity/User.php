@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 
@@ -16,6 +18,14 @@ class User extends BaseUser
      * @ORM\Column(type="integer")
      */
     protected $id;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->roles = array('ROLE_USER');
+        $this->orders = new ArrayCollection();
+    }
 
     /**
      * @ORM\Column(type="string", length=85, nullable=true)
@@ -36,6 +46,16 @@ class User extends BaseUser
      * @ORM\Column(type="string", length=20, nullable=true)
      */
     private $PhoneNumber;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Location", mappedBy="User", cascade={"persist", "remove"})
+     */
+    private $location;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Orders", mappedBy="user")
+     */
+    private $orders;
 
     public function getId(): ?int
     {
@@ -86,6 +106,55 @@ class User extends BaseUser
     public function setPhoneNumber(?string $PhoneNumber): self
     {
         $this->PhoneNumber = $PhoneNumber;
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): self
+    {
+        $this->location = $location;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newUser = $location === null ? null : $this;
+        if ($newUser !== $location->getUser()) {
+            $location->setUser($newUser);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Orders[]
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Orders $order): self
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders[] = $order;
+            $order->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Orders $order): self
+    {
+        if ($this->orders->contains($order)) {
+            $this->orders->removeElement($order);
+            // set the owning side to null (unless already changed)
+            if ($order->getUser() === $this) {
+                $order->setUser(null);
+            }
+        }
 
         return $this;
     }

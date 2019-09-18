@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\CheckoutFormType;
 use App\Repository\ProductRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,17 +38,9 @@ class CartController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/{value}/cart", name="cart_set")
-     */
-    public function setCart (Request $request, ProductRepository $productRepository)
-    {
-        $id = $request->getParameter('id');
-        $value = $request->getParameter('value');
-        return $this->redirectToRoute('cart');
-    }
-
-    /**
      * @Route("/checkout", name="checkout")
+     *
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') or is_granted('ROLE_SUPER_ADMIN')")
      */
     public function checkout (Request $request, ProductRepository $productRepository, \Swift_Mailer $mailer)
     {

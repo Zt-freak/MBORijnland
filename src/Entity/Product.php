@@ -27,11 +27,6 @@ class Product
     private $Price;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $Image;
-
-    /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $Description;
@@ -40,6 +35,12 @@ class Product
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="Products")
      */
     private $Category;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\VAT")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $VAT;
 
     public function getId(): ?int
     {
@@ -70,18 +71,6 @@ class Product
         return $this;
     }
 
-    public function getImage(): ?string
-    {
-        return $this->Image;
-    }
-
-    public function setImage(?string $Image): self
-    {
-        $this->Image = $Image;
-
-        return $this;
-    }
-
     public function getDescription(): ?string
     {
         return $this->Description;
@@ -102,6 +91,18 @@ class Product
     public function setCategory(?Category $Category): self
     {
         $this->Category = $Category;
+
+        return $this;
+    }
+
+    public function getVAT(): ?VAT
+    {
+        return $this->VAT;
+    }
+
+    public function setVAT(?VAT $VAT): self
+    {
+        $this->VAT = $VAT;
 
         return $this;
     }

@@ -11,7 +11,6 @@
                 <th>Id</th>
                 <th>Name</th>
                 <th>Price</th>
-                <th>Image</th>
                 <th>Description</th>
                 <th>Category</th>
                 <th>actions</th>
@@ -23,13 +22,14 @@
                 <td>{{ product.id }}</td>
                 <td>{{ product.Name }}</td>
                 <td>{{ product.Price }}</td>
-                <td>{{ product.Image }}</td>
                 <td>{{ product.Description }}</td>
                 <td>{{ product.Category }}</td>
                 <td>
                     <a href="{{ path('product_show', {'id': product.id}) }}">show</a>
+                    {% if is_granted("ROLE_ADMIN") %}
                     <a href="{{ path('product_edit', {'id': product.id}) }}">edit</a>
-                    <a href="{{ path('product_add', {'id': product.id}) }}">add</a>
+                    {% endif %}
+                    <a href="{{ path('product_add', {'id': product.id}) }}">Bestel</a>
                 </td>
             </tr>
         {% else %}
@@ -39,6 +39,7 @@
         {% endfor %}
         </tbody>
     </table>
-
+    {% if is_granted("ROLE_ADMIN") %}
     <a href="{{ path('product_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}

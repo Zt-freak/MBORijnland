@@ -5,3 +5,7 @@ fos_user:
   from_email:
     address: "youpvleeuwen@gmail.com"
     sender_name: "Youp van Leeuwen"
+
+  profile:
+    form:
+      type: App\Form\ProfileEditType
