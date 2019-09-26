@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CartController!{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .table>tbody>tr>td, .table>tfoot>tr>td{
+            vertical-align: middle;
+        }
+        @media screen and (max-width: 600px) {
+            table#cart tbody td .form-control{
+                width:20%;
+                display: inline !important;
+            }
+            .actions .btn{
+                width:36%;
+                margin:1.5em 0;
+            }
+
+            .actions .btn-info{
+                float:left;
+            }
+            .actions .btn-danger{
+                float:right;
+            }
+
+            table#cart thead { display: none; }
+            table#cart tbody td { display: block; padding: .6rem; min-width:320px;}
+            table#cart tbody tr td:first-child { background: #333; color: #fff; }
+            table#cart tbody td:before {
+                content: attr(data-th); font-weight: bold;
+                display: inline-block; width: 8rem;
+            }
+
+
+
+            table#cart tfoot td{display:block; }
+            table#cart tfoot td .btn{display:block;}
+
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <table id="cart" class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th style="width:50%">Product</th>
+                <th style="width:10%">Price</th>
+                <th style="width:8%">Quantity</th>
+                <th style="width:22%" class="text-center">Subtotal</th>
+                <th style="width:10%"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for product in Products %}
+            <tr>
+                <td data-th="Product">
+                    <div class="row">
+                        <div class="col-sm-2 hidden-xs"><img src="http://placehold.it/100x100" alt="..." class="img-responsive"/></div>
+                        <div class="col-sm-10">
+                            <h4 class="nomargin">{{ product.Product.Name }}</h4>
+                            <p>{{ product.Product.Description }}</p>
+                        </div>
+                    </div>
+                </td>
+                <td data-th="Price">€ <span class="price">{{ product.Product.Price }}</span></td>
+                <td data-th="Quantity">
+                    <input type="hidden" class="hidden" value="{{ product.Product.id }}">
+                    <p>{{ product.Amount }}</p>
+                </td>
+                <td data-th="Subtotal" class="text-center subPrice">1.99</td>
+                <td class="actions" data-th="">
+                    <a href="{{ path('product_add', {'id': product.Product.id}) }}" class="btn btn-info btn-sm link"><i class="fa fa-plus"></i></a>
+                    {% if product.Amount > 1 %}
+                        <a href="{{ path('product_minus', {'id': product.Product.id}) }}" class="btn btn-danger btn-sm link"><i class="fa fa-minus"></i></a>
+                    {% else %}
+                        <a href="{{ path('product_minus', {'id': product.Product.id}) }}" class="btn btn-danger btn-sm link"><i class="fa fa-trash-o"></i></a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr class="visible-xs">
+                <td class="text-center total"><strong>Total: € <span class="total"></span></strong></td>
+            </tr>
+            <tr>
+                <td><a href="{{ path('product_index') }}" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
+                <td colspan="2" class="hidden-xs"></td>
+                <td class="hidden-xs text-center"><strong>Total: € <span class="total"></span></strong></td>
+                <td><a href="{{ path('checkout') }}" class="btn btn-success btn-block {% if Products|length < 1 %}disabled{% endif %}">Checkout <i class="fa fa-angle-right"></i></a></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        const prices = document.getElementsByClassName("price")
+        const amounts = document.getElementsByClassName("amount")
+        const subPrices = document.getElementsByClassName("subPrice")
+        const Totals = document.getElementsByClassName("total")
+        const Ids = document.getElementsByClassName("hidden")
+        const links = document.getElementsByClassName("link")
+
+        const updatePrices = () => {
+            let total = 0
+            for (let x = 0; x < prices.length; x++) {
+                subPrices[x].innerText = (parseFloat(prices[x].innerText) * parseInt(amounts[x].value)).toFixed(2)
+
+                total += parseFloat(subPrices[x].innerText)
+
+                subPrices[x].innerText = subPrices[x].innerText.replace(".", ",")
+            }
+
+            for (let x = 0; x < Totals.length; x++) {
+                Totals[x].innerText = total.toFixed(2)
+                Totals[x].innerText = Totals[x].innerText.replace(".", ",")
+            }
+        }
+
+        updatePrices()
+    </script>
+{% endblock %}

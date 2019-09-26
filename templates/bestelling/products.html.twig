@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bestelling index{% endblock %}
+
+{% block body %}
+    <h1>Bestellingen</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Product</th>
+            <th>Prijs</th>
+            <th>Aantal</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in Orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.product.name }}</td>
+                <td>€{{ order.product.price }}</td>
+                <td>{{ order.amount }}</td>
+                <td><a href="{{ path('product_show', {'id': order.product.id}) }}">Bekijk product</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

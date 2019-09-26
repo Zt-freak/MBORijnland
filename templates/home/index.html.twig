@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ewa Wesley!{% endblock %}
+
+{% block body %}
+    <h1>Meest gekochte producten</h1>
+    {% for product in MostBought %}
+        <a href="{{ path('product_show', {'id': product.id}) }}">
+            <h2>{{ product.name }}</h2>
+            <p>Voor maar {{ product.price }}!</p>
+        </a>
+    {% endfor %}
+{% endblock %}

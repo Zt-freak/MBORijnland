@@ -1,0 +1,11 @@
+fos_user:
+  db_driver: orm
+  firewall_name: main
+  user_class: App\Entity\User
+  from_email:
+    address: "youpvleeuwen@gmail.com"
+    sender_name: "Youp van Leeuwen"
+
+  profile:
+    form:
+      type: App\Form\ProfileEditType
