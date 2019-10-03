@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProfileController!{% endblock %}
+
+{% block body %}
+    <main role="main">
+
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+        <div class="jumbotron">
+            <div class="container">
+                <h1 class="display-3">{{ userProfile.username }}</h1>
+                {% if userProfile.bio %}
+                <p>
+                    {{ userProfile.bio }}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Example row of columns -->
+            <div class="row">
+                {% for post in posts %}
+                <div class="col-md-4">
+                    <h2>{{ post.title }}</h2>
+                    <p>
+                        {{ post.content|slice(0,150)|raw }}
+                    </p>
+                    <p><a class="btn btn-secondary" href="{{ path('post_show', {'id': post.id}) }}" role="button">Read more »</a></p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <hr>
+
+        </div> <!-- /container -->
+
+    </main>
+{% endblock %}

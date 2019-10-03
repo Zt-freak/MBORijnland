@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post{% endblock %}
+
+{% block stylesheets %}
+    .card-header .fa {
+        transition: .3s transform ease-in-out;
+    }
+    .card-header .collapsed .fa {
+        transform: rotate(90deg);
+    }
+{% endblock %}
+
+{% block body %}
+            <!-- Title -->
+            <h1 class="mt-4">{{ post.title }}</h1>
+
+            <!-- Author -->
+            <p class="lead">
+                by
+                <a href="{{ path('user_profile', {'id': post.user.id}) }}">{{ post.user }}</a>
+            </p>
+
+            <hr>
+
+            <!-- Date/Time -->
+            <p>
+                Posted on {{ post.createdAt ? post.createdAt|date('F d, Y') : '' }} at  {{ post.createdAt ? post.createdAt|date('h:i a') : '' }}
+                {% if date(post.createdAt) < date(post.updatedAt) %}
+                    and updated on {{ post.updatedAt ? post.updatedAt|date('F d, Y ') : '' }} at {{ post.updatedAt ? post.updatedAt|date('h:i a') : '' }}
+                {% endif %}
+            </p>
+
+            <hr>
+
+            <!-- Preview Image -->
+            {% if post.imageName %}
+                <img class="card-img-top" src="{{ vich_uploader_asset(post, 'imageFile') }}" alt="Card image cap">
+            {% else %}
+                <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+            {% endif %}
+
+            <hr>
+
+            <p>
+                {{ post.content|raw }}
+            </p>
+
+            <hr>
+
+            <!-- Comments Form -->
+            <div class="card my-4">
+                <h5 class="card-header">
+                    <a class="collapsed d-block" data-toggle="collapse" href="#collapse-collapsed" aria-expanded="true" aria-controls="collapse-collapsed" id="heading-collapsed">
+                        <i class="fa fa-chevron-down pull-right"></i>
+                        Leave a Comment:
+                    </a>
+                </h5>
+                <div id="collapse-collapsed" class="collapse" aria-labelledby="heading-collapsed">
+                    <div class="card-body">
+                        <form action="{{ path('post_comment', {'id': post.id}) }}" method="post">
+                        <div class="form-group">
+                            <textarea name="commentContent" class="form-control" rows="3"></textarea>
+                        </div>
+                        {% if app.user %}
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        {% else %}
+                            <p class="text-muted mt-2">
+                                Please <a href="{{ path('fos_user_security_login') }}">login</a> to leave a comment
+                            </p>
+                        {% endif %}
+                    </form>
+                </div>
+                </div>
+            </div>
+
+            <!-- Comments of poster -->
+            {% for comment in comments %}
+                {% if post.user is same as(comment.user) %}
+                    <div class="media mb-4 bg-info py-3 rounded px-1">
+                        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                        <div class="media-body">
+                            <h5 class="mt-0">{{ comment.user }}</h5>
+                            {{ comment.content }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <!-- Single Comment -->
+            {% for comment in comments %}
+                {% if post.user is not same as(comment.user) %}
+                    <div class="media mb-4 px-1">
+                        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                        <div class="media-body">
+                            <h5 class="mt-0">{{ comment.user }}</h5>
+                            {{ comment.content }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+    <a href="{{ path('post_index', {'topicName': post.topic.path}) }}">back to list</a>
+
+    {% endblock %}
+    {% block sidebar %}
+        {% if app.user and app.user.id is same as(post.user.id) or is_granted('ROLE_ADMIN')%}
+            <div class="card my-4">
+                <h5 class="card-header">Admin functions</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg">
+                            <ul class="list-unstyled mb-0">
+                                <li>
+                                    <a href="{{ path('post_edit', {'id': post.id}) }}">Edit</a>
+                                </li>
+                                <li>
+                                    <a href="">{{ include('post/_delete_form.html.twig') }}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+    {% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Topic index{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-between">
+        {% for topic in topics %}
+            <div class="card col-md-5 my-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ topic.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Currently has {{ topic.posts.count }} posts</h6>
+                    <p class="card-text">{{ topic.description }}</p>
+                    <a href="{{ path('post_index', {'topicName': topic.path}) }}" class="card-link">View posts</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
