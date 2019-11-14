@@ -24,8 +24,35 @@ class TopicController extends AbstractController
      */
     public function index(TopicRepository $topicRepository): Response
     {
+        $views = $topicRepository->mostViewed();
+        $newViews = $views;
+
         return $this->render('topic/index.html.twig', [
-            'topics' => $topicRepository->activatedTopics(),
+            'topics' => $topicRepository->mostCommented(1),
+            'views' => $newViews,
+            'comments' => true
+        ]);
+    }
+
+    /**
+     * @Route("/rejected", name="topic_rejected", methods={"GET"})
+     */
+    public function rejected(TopicRepository $topicRepository): Response
+    {
+        return $this->render('topic/index.html.twig', [
+            'topics' => $topicRepository->mostCommented(0),
+            'comments' => false
+        ]);
+    }
+
+    /**
+     * @Route("/unchecked", name="topic_unchecked", methods={"GET"})
+     */
+    public function unchecked(TopicRepository $topicRepository): Response
+    {
+        return $this->render('topic/index.html.twig', [
+            'topics' => $topicRepository->mostCommented('null'),
+            'comments' => false
         ]);
     }
 
@@ -38,7 +65,7 @@ class TopicController extends AbstractController
         $result = [];
 
         foreach ($topics as $topic) {
-            array_push($result, ["Name" => $topic->getName(), "Path" => $topic->getPath()]);
+            array_push($result, ["Name" => $topic["name"], "Path" => $topic["path"]]);
         }
 
         $response = new JsonResponse();
@@ -116,12 +143,12 @@ class TopicController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/view/whitelist", name="topic_whitelist", methods={"GET"}
+     * @Route("/{id}/view/whitelist", name="topic_whitelist", methods={"GET"})
      */
     public function whitelistView(Topic $topic, TopicWhitelistRepository $topicWhitelistRepository)
     {
         return $this->render('topic/whitelist.html.twig', [
-            'users' =>
+            'users' => null
         ]);
     }
 
@@ -138,7 +165,7 @@ class TopicController extends AbstractController
     }
 
     /**
-     * @Route("/{topicId}/{userId}/whitelist", name="topic_whitelist_add)
+     * @Route("/{topicId}/{userId}/whitelist", name="topic_whitelist_add")
      */
     public function addToWhiteList(Topic $topic, User $user)
     {

@@ -3,35 +3,38 @@
 {% block title %}Post index{% endblock %}
 
 {% block body %}
-    {% for post in posts %}
-    <div class="card my-4">
-        {% if post.imageName %}
-            <img class="card-img-top" src="{{ vich_uploader_asset(post, 'imageFile') }}" alt="Card image cap" style="height: 300px; object-fit: cover;">
+    {% if posts %}
+            {% for post in posts %}
+            <div class="card my-4">
+                {% if post.imageName %}
+                    <img class="card-img-top" src="{{ vich_uploader_asset(post, 'imageFile') }}" alt="Card image cap" style="height: 300px; object-fit: cover;">
+                {% else %}
+                    <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="card-title">{{ post.Title }}</h2>
+                    <p class="card-text">
+                        {{ post.description|raw }}
+                    </p>
+                    <a href="{{ path('post_show', {'id': post.id}) }}" class="btn btn-primary">Read More &rarr;</a>
+                </div>
+                <div class="card-footer text-muted">
+                    Posted on {{ post.createdAt ? post.createdAt|date('F d, Y') : '' }}
+                    {% if date(post.createdAt) < date(post.updatedAt) %}
+                        and updated on {{ post.updatedAt ? post.updatedAt|date('F d, Y') : '' }}
+                    {% endif %}
+                    by
+                    <a href="{{ path('user_profile', {'id': post.user.id}) }}">{{ post.user }}</a>
+                </div>
+            </div>
+            {% endfor %}
         {% else %}
-            <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
-        {% endif %}
-        <div class="card-body">
-            <h2 class="card-title">{{ post.Title }}</h2>
-            <p class="card-text">
-                {{ post.description|raw }}
-            </p>
-            <a href="{{ path('post_show', {'id': post.id}) }}" class="btn btn-primary">Read More &rarr;</a>
-        </div>
-        <div class="card-footer text-muted">
-            Posted on {{ post.createdAt ? post.createdAt|date('F d, Y') : '' }}
-            {% if date(post.createdAt) < date(post.updatedAt) %}
-                and updated on {{ post.updatedAt ? post.updatedAt|date('F d, Y') : '' }}
-            {% endif %}
-            by
-            <a href="{{ path('user_profile', {'id': post.user.id}) }}">{{ post.user }}</a>
-        </div>
-    </div>
-
-    {% endfor %}
+            <h2 class="mt-4 display-4">Er zijn nog geen posts gemaakt voor deze topic</h2>
+    {% endif %}
 {% endblock %}
 
 {% block sidebar %}
-    {% if posts[0].Topic.User is same as(app.user) or is_granted('ROLE_ADMIN') %}
+    {% if posts and posts[0].Topic.User is same as(app.user) or is_granted('ROLE_ADMIN') %}
         <div class="card my-4">
             <h5 class="card-header">
                 Topic functions
@@ -41,7 +44,7 @@
                     <div class="col">
                         <ul class="list-unstyled mb-0">
                             <li>
-                                <a href="{{ path('post_new') }}">Make post</a>
+                                <a href="{{ path('post_new', {'id': posts[0].Topic.id}) }}">Make post</a>
                             </li>
                             <li>
                                 <a href="">Edit topic</a>

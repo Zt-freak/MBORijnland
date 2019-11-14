@@ -23,8 +23,42 @@ class TopicRepository extends ServiceEntityRepository
     public function activatedTopics()
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.Accepted = true')
+            ->select("COUNT('*') as posts, t.Name as name, t.description as description, t.Path as path")
+            ->from('App:Post', 'p')
+            ->andWhere('t.id = p.Topic')
+            ->andWhere('t.Accepted = 1')
+            ->groupBy('p.Topic')
+            ->orderBy('posts', 'DESC')
             ->setMaxResults(6)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function mostCommented ($accepted)
+    {
+        return $this->createQueryBuilder('t')
+            ->select("COUNT('*') as posts, t.id as id, t.Name as name, t.description as description, t.Path as path")
+//            ->from('App:Topic', 't')
+            ->from('App:Post', 'p')
+            ->andWhere('t.id = p.Topic')
+            ->andWhere('t.Accepted = :accepted')
+            ->setParameter('accepted', $accepted)
+            ->groupBy('p.Topic')
+            ->orderBy('posts', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+//SELECT COUNT(*), t.name FROM `view` as v, post as p, topic as t WHERE v.post_id = p.id and p.topic_id = t.id GROUP BY t.id
+    public function mostViewed ()
+    {
+        return $this->createQueryBuilder('t')
+            ->select("COUNT('*') as views, t.id as id")
+            ->from('App:Post', 'p')
+            ->from('App:View', 'v')
+            ->andWhere('v.Post = p.id')
+            ->andWhere('t.id = p.Topic')
+            ->groupBy('t.id')
+            ->orderBy('views', 'DESC')
             ->getQuery()
             ->getResult()
             ;

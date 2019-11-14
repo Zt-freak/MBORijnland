@@ -4,10 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Post;
+use App\Entity\Topic;
+use App\Entity\View;
 use App\Form\PostType;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use App\Repository\TopicRepository;
+use App\Repository\ViewRepository;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,9 +32,9 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("post/new", name="post_new", methods={"GET","POST"})
+     * @Route("post/{id}", name="post_new", methods={"POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Topic $topic): Response
     {
         $post = new Post();
         $post->setUser($this->getUser());
@@ -65,8 +69,19 @@ class PostController extends AbstractController
     /**
      * @Route("post/{id}", name="post_show", methods={"GET"})
      */
-    public function show(Post $post): Response
+    public function show(Post $post, ViewRepository $viewRepository): Response
     {
+        $view = new View();
+        $view->setPost($post);
+
+        if ($this->getUser()) {
+            $view->setUser($this->getUser());
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($view);
+        $entityManager->flush();
+
         return $this->render('post/show.html.twig', [
             'post' => $post,
             'comments' => $post->getComments()

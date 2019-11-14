@@ -17,7 +17,6 @@ class PostType extends AbstractType
             ->add('Title')
             ->add('Content', CKEditorType::class)
             ->add('description')
-            ->add('Categorie')
             ->add('Topic')
             ->add('imageFile', VichImageType::class)
         ;

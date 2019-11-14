@@ -29,11 +29,6 @@ class Post
     private $Title;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="posts")
-     */
-    private $Categorie;
-
-    /**
      * @ORM\Column(type="text")
      */
     private $Content;
@@ -83,9 +78,15 @@ class Post
      */
     private $imageName;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\View", mappedBy="Post", orphanRemoval=true)
+     */
+    private $views;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->views = new ArrayCollection();
     }
 
     /**
@@ -114,18 +115,6 @@ class Post
     public function setTitle(string $Title): self
     {
         $this->Title = $Title;
-
-        return $this;
-    }
-
-    public function getCategorie(): ?Category
-    {
-        return $this->Categorie;
-    }
-
-    public function setCategorie(?Category $Categorie): self
-    {
-        $this->Categorie = $Categorie;
 
         return $this;
     }
@@ -260,5 +249,36 @@ class Post
     public function getImageName(): ?string
     {
         return $this->imageName;
+    }
+
+    /**
+     * @return Collection|View[]
+     */
+    public function getViews(): Collection
+    {
+        return $this->views;
+    }
+
+    public function addView(View $view): self
+    {
+        if (!$this->views->contains($view)) {
+            $this->views[] = $view;
+            $view->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeView(View $view): self
+    {
+        if ($this->views->contains($view)) {
+            $this->views->removeElement($view);
+            // set the owning side to null (unless already changed)
+            if ($view->getPost() === $this) {
+                $view->setPost(null);
+            }
+        }
+
+        return $this;
     }
 }

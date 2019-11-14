@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProfileController extends AbstractController
 {
     /**
-     * @Route("/{id}", name="user_profile")
+     * @Route("/{id}/show", name="user_profile")
      */
     public function index(PostRepository $postRepository, UserRepository $userRepository, User $user)
     {
