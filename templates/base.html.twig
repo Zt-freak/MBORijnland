@@ -2,7 +2,9 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}{% endblock %} - De Werkplek</title>
+
+        {{ encore_entry_link_tags('default') }}
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
