@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
+@import "Mixins";
 
 .home {
     & header {
@@ -17,28 +18,17 @@
 
         & .header {
             &Content {
-                max-width: 1080px;
                 margin: 0 auto;
 
                 & h1 {
-                    font-family: 'Karla', sans-serif;
-                    font-size: 52px;
-                    font-weight: bold;
-                    color: #fff;
-                    letter-spacing: 0.1em;
-                    line-height: 61px;
+                    @include Font(52px, bold, #fff, 0.1em, 61px);
 
                     margin: 0 0 24px 0;
                     width: 50%;
                 }
 
                 & p {
-                    font-family: 'Karla', sans-serif;
-                    font-size: 20px;
-                    font-weight: bold;
-                    color: #fff;
-                    letter-spacing: 0.1em;
-                    line-height: 23px;
+                    @include Font(20px, bold, #fff, 0.1em, 23px);
 
                     width: 50%;
                     padding-left: 20px;
@@ -46,18 +36,14 @@
                 }
 
                 & a {
+                    @include Font(20px, bold, #fff, 0.1em, 23px);
+
                     text-decoration: none;
                     background-color: #D9C900;
 
                     padding: 25px 64px;
                     border-radius: 30px;
 
-                    font-family: 'Karla', sans-serif;
-                    font-size: 20px;
-                    font-weight: bold;
-                    color: #000;
-                    letter-spacing: 0.1em;
-                    line-height: 23px;
                     text-transform: uppercase;
                     transition: all .3s ease;
 
@@ -86,13 +72,7 @@
             width: 30%;
 
             & h4 {
-                font-family: 'Karla', sans-serif;
-                font-style: normal;
-                font-weight: bold;
-                font-size: 20px;
-                line-height: 23px;
-                letter-spacing: 0.1em;
-                color: #000000;
+                @include Font(20px, bold, #000, 0.1em, 23px);
 
                 margin: 0 0 20px 0;
 
@@ -102,14 +82,7 @@
             }
 
             & p {
-                font-family: 'Open Sans', sans-serif;
-                font-style: normal;
-                font-weight: 300;
-                font-size: 14px;
-                line-height: 120%;
-                letter-spacing: 0.1em;
-
-                color: #000000;
+                @include Font(14px, 300, #000, 0.1em, 120%, 'Open Sans');
             }
 
             & img {
