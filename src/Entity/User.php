@@ -10,6 +10,8 @@ use FOS\UserBundle\Model\User as BaseUser;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
 // src/Entity/User.php
 namespace App\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 /**
@@ -29,6 +31,9 @@ class User extends BaseUser
     protected $id;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Entry", mappedBy="User")
+     */
+    private $entries;
      * @ORM\OneToMany(targetEntity="App\Entity\Post", mappedBy="User", orphanRemoval=true)
      */
     private $posts;
@@ -61,6 +66,22 @@ class User extends BaseUser
     public function __construct()
     {
         parent::__construct();
+        $this->entries = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection|Entry[]
+     */
+    public function getEntries(): Collection
+    {
+        return $this->entries;
+    }
+
+    public function addEntry(Entry $entry): self
+    {
+        if (!$this->entries->contains($entry)) {
+            $this->entries[] = $entry;
+            $entry->setUser($this);
 
         $this->roles = array('ROLE_USER');
         $this->posts = new ArrayCollection();
@@ -229,6 +250,13 @@ class User extends BaseUser
         return $this;
     }
 
+    public function removeEntry(Entry $entry): self
+    {
+        if ($this->entries->contains($entry)) {
+            $this->entries->removeElement($entry);
+            // set the owning side to null (unless already changed)
+            if ($entry->getUser() === $this) {
+                $entry->setUser(null);
     public function removeView(View $view): self
     {
         if ($this->views->contains($view)) {
