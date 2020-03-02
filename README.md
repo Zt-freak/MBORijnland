@@ -1,6 +1,7 @@
 
 # MBORijnland
 
+Deze branch bevat het 'Forum' project
 Deze branch bevat het 'Webshop' project
 
 # Werkplaats

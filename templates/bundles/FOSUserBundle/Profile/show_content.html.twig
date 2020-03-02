@@ -3,18 +3,6 @@
 <div class="fos_user_user_show">
     <p>{{ 'profile.show.username'|trans }}: {{ user.username }}</p>
     <p>{{ 'profile.show.email'|trans }}: {{ user.email }}</p>
-    {% if user.phoneNumber is defined %}
-    <p>Telefoonnummer: {{ user.phoneNumber }}</p>
-    {% endif %}
-    {% if user.city is defined %}
-    <p>Stad: {{ user.city }}</p>
-    <p>Straat: {{ user.street }}</p>
-    <p>Huisnummer: {{ user.houseNumber }}</p>
-        <a href="{{ path('fos_user_profile_edit') }}">Adres aanpassen</a>
-        {% else %}
-    <a href="{{ path('fos_user_profile_edit') }}">Adres toevoegen</a>
-    {% endif %}
-    <br><a href="{{ path('fos_user_change_password') }}">Wachtwoord veranderen</a><br>
-    <a href="{{ path('fos_user_profile_edit') }}">Gegevens aanpassen</a><br>
-    <a href="{{ path('bestelling') }}">Bekijk bestellingen</a>
+    <a class="btn btn-outline-warning" href="{{ path('fos_user_profile_edit') }}">Aanpassen</a>
+    <a class="btn btn-info" href="{{ path('user_profile', {'id': user.id}) }}">Bekijk wat de rest ziet</a>
 </div>

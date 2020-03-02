@@ -67,9 +67,10 @@
 /.env
 
 # IDEA
-
 /.idea/
 
+# NODE MODULES
+/node_modules/
 # IDEA
 /.idea/
 ###> symfony/webpack-encore-bundle ###
@@ -82,4 +83,3 @@ yarn-error.log
 ###> symfony/web-server-bundle ###
 /.web-server-pid
 ###< symfony/web-server-bundle ###
-
