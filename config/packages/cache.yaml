@@ -5,6 +5,11 @@ framework:
         #prefix_seed: your_vendor_name/app_name
 
         # The app cache caches to the filesystem by default.
+        # Unique name of your app: used to compute stable namespaces for cache keys.
+        #prefix_seed: your_vendor_name/app_name
+
+        # The "app" cache stores to the filesystem by default.
+        # The data in this cache should persist between deploys.
         # Other options include:
 
         # Redis
