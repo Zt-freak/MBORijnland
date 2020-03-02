@@ -1,3 +1,18 @@
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
 # Cache and logs (Symfony2)
 /app/cache/*
 /app/logs/*
@@ -47,6 +62,7 @@
 # Embedded web-server pid file
 /.web-server-pid
 
+
 # ENV
 /.env
 
@@ -55,3 +71,15 @@
 
 # NODE MODULES
 /node_modules/
+# IDEA
+/.idea/
+###> symfony/webpack-encore-bundle ###
+/node_modules/
+/public/build/
+npm-debug.log
+yarn-error.log
+###< symfony/webpack-encore-bundle ###
+
+###> symfony/web-server-bundle ###
+/.web-server-pid
+###< symfony/web-server-bundle ###
