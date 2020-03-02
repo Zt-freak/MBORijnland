@@ -1,0 +1,22 @@
+<h3>Hallo {{ Naam }}</h3>
+
+<p>Hier is uw bestellijst</p>
+
+<table>
+    <tr>
+        <th>Naam</th>
+        <th>Product Prijs</th>
+        <th>Aantal</th>
+    </tr>
+{% for product in Products %}
+    <tr>
+        <td data-th="Product">
+            <h6 class="nomargin">{{ product.Product.Name }}</h6>
+        </td>
+        <td data-th="Price">€ <span class="price">{{ product.Product.Price }}</span></td>
+        <td data-th="Quantity">
+            <p class="form-control text-center amount">{{ product.Amount }}</p>
+        </td>
+    </tr>
+{% endfor %}
+</table>

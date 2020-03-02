@@ -1,4 +1,12 @@
 security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: bcrypt
+
+    role_hierarchy:
+        ROLE_USER:        ROLE_USER
+        ROLE_ADMIN:       ROLE_ADMIN
+        ROLE_SUPER_ADMIN: ROLE_SUPER_ADMIN
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     encoders:
         FOS\UserBundle\Model\UserInterface: bcrypt
@@ -9,6 +17,7 @@ security:
     providers:
         fos_userbundle:
             id: fos_user.user_provider.username
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -18,6 +27,10 @@ security:
             form_login:
                 provider: fos_userbundle
                 csrf_token_generator: security.csrf.token_manager
+
+            logout:       true
+            anonymous:    true
+
             logout:       true
             anonymous:    true
     # Easy way to control access for large sections of your site
@@ -26,4 +39,5 @@ security:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/, role: ROLE_SUPER_ADMIN }
         - { path: ^/admin/, role: ROLE_ADMIN }
